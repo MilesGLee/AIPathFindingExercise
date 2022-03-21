@@ -59,6 +59,23 @@ void sortGScore(DynamicArray<NodeGraph::Node*>& nodes)
 	}
 }
 
+void sortHScore(DynamicArray<NodeGraph::Node*>& nodes)
+{
+	NodeGraph::Node* key = nullptr;
+	int j = 0;
+
+	for (int i = 1; i < nodes.getLength(); i++) {
+		key = nodes[i];
+		j = i - 1;
+		while (j >= 0 && nodes[j]->hScore > key->hScore) {
+			nodes[j + 1] = nodes[j];
+			j--;
+		}
+
+		nodes[j + 1] = key;
+	}
+}
+
 DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 {
 	resetGraphScore(start);
