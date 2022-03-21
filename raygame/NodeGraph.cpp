@@ -67,7 +67,6 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 		openSet.remove(openSet[0]);
 	}
 
-
 	return reconstructPath(start, goal);
 }
 
