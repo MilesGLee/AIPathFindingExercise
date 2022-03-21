@@ -51,7 +51,7 @@ Maze::Maze()
 	};
 
 
-	m_player = new Player(0, 0, "Player");
+	m_player = new Player(0, 0, "Player", 2000, 50);
 	//Generate the map
 	generate(map);
 }
@@ -69,6 +69,7 @@ Maze::~Maze()
 
 void Maze::draw()
 {
+	//NodeGraph::drawGraph(m_grid[0][0].node);
 	Scene::draw();
 	NodeGraph::drawGraph(m_grid[0][0].node);
 }
@@ -92,6 +93,7 @@ Maze::Tile Maze::createTile(int x, int y, TileKey key)
 {
 	// Create a new tile at the given location
 	Tile tile{ x, y };
+	tile.node = new NodeGraph::Node();
 	MathLibrary::Vector2 position = getPosition(tile);
 	// Set the cost and actor of each tile
 	switch (key) {
@@ -101,6 +103,7 @@ Maze::Tile Maze::createTile(int x, int y, TileKey key)
 	case TileKey::WALL:
 		tile.cost = 100.0f;
 		tile.actor = new Wall(position.x, position.y);
+		tile.node->walkable = false;
 		addActor(tile.actor);
 		break;
 	case TileKey::PLAYER:
@@ -127,7 +130,6 @@ void Maze::generate(TileKey map[Maze::HEIGHT][Maze::WIDTH])
 			// Create the tile
 			Tile currentTile = createTile(x, y, map[y][x]);
 			// Add node to graph
-			currentTile.node = new NodeGraph::Node();
 			currentTile.node->position = getPosition(currentTile);
 			if (x > 0) { // west connection
 				Tile other = m_grid[x - 1][y];
