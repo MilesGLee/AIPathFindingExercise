@@ -42,32 +42,54 @@ void sortFScore(DynamicArray<NodeGraph::Node*>& nodes)
 	}
 }
 
+void sortGScore(DynamicArray<NodeGraph::Node*>& nodes)
+{
+	NodeGraph::Node* key = nullptr;
+	int j = 0;
+
+	for (int i = 1; i < nodes.getLength(); i++) {
+		key = nodes[i];
+		j = i - 1;
+		while (j >= 0 && nodes[j]->gScore > key->gScore) {
+			nodes[j + 1] = nodes[j];
+			j--;
+		}
+
+		nodes[j + 1] = key;
+	}
+}
+
 DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 {
-	//Insert algorithm here
-	DynamicArray<NodeGraph::Node*> openSet = DynamicArray<NodeGraph::Node*>();
-	DynamicArray<NodeGraph::Node*> closedSet = DynamicArray<NodeGraph::Node*>();
+	resetGraphScore(start);
+	DynamicArray<NodeGraph::Node*> openList, closedList = DynamicArray<NodeGraph::Node*>();
 
-	openSet.addItem(start);
-	while (openSet.getLength() > 0)
+	openList.addItem(start);
+
+	while (openList.getLength() != 0) 
 	{
-		// For each of the nodes next to the current node set the g scores of each and set
-		for (int i = 0; i < openSet[0]->edges.getLength(); i++)
-		{
-			NodeGraph::Node* targetNode = openSet[0]->edges[i].target;
+		sortGScore(openList);
 
-			if (!closedSet.contains(targetNode) && !openSet.contains(targetNode))
+		NodeGraph::Node* m_currentNode = openList[0];
+
+		for (int i = 0; i < openList[0]->edges.getLength(); i++) 
+		{
+			NodeGraph::Node* targetNode = openList[0]->edges[i].target;
+
+			if (!closedList.contains(targetNode) && !openList.contains(targetNode)) 
 			{
-				targetNode->gScore = openSet[0]->gScore + openSet[0]->edges[i].cost;
-				targetNode->previous = openSet[0];
-				openSet.addItem(targetNode);
+				targetNode->gScore = openList[0]->gScore + openList[0]->edges[i].cost;
+				targetNode->previous = openList[0];
+				openList.addItem(targetNode);
 			}
 		}
-		closedSet.addItem(openSet[0]);
-		openSet.remove(openSet[0]);
-	}
+		closedList.addItem(openList[0]);
+		openList.remove(openList[0]);
 
-	return reconstructPath(start, goal);
+		if (m_currentNode == goal)
+			return reconstructPath(start, goal);
+	}
+	
 }
 
 void NodeGraph::drawGraph(Node* start)
