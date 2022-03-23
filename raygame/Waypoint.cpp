@@ -17,3 +17,8 @@ void Waypoint::draw()
 	Actor::draw();
 	DrawRectangle(getTransform()->getWorldPosition().x - Maze::TILE_SIZE / 2, getTransform()->getWorldPosition().y - Maze::TILE_SIZE / 2, Maze::TILE_SIZE, Maze::TILE_SIZE, YELLOW);
 }
+
+void Waypoint::onCollision(Actor* other)
+{
+	
+}

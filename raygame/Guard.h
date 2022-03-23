@@ -13,7 +13,7 @@ public:
 		CHASE
 	};
 
-	Guard(float x, float y, float speed, float maxForce, int color, Maze* maze);
+	Guard(float x, float y, float speed, float maxForce, int color, Maze* maze, Actor* player);
 	~Guard();
 
 	virtual void update(float deltaTime) override;
@@ -29,6 +29,7 @@ public:
 	/// <param name="target">The new target</param>
 	void setTarget(Actor* target);
 
+	int getDistance(Actor* one, Actor* two);
 	void changePatrol();
 
 private:
@@ -36,6 +37,7 @@ private:
 	Maze* m_maze;
 
 	Actor* m_target = nullptr;
+	Actor* m_player;
 	DynamicArray<Actor*> m_waypoints;
 	State m_state;
 };

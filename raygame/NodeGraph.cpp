@@ -96,35 +96,34 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 		closedList.addItem(currentNode); //Remove the current node from the open list and add it to the closed list.
 		openList.remove(currentNode);
 
-		for (int n = 0; n < currentNode->edges.getLength(); n++) //Loop through each edge of the current node.
+		for (int i = 0; i < currentNode->edges.getLength(); i++) //Loop through each edge of the current node.
 		{
-			NodeGraph::Node* targetNode = currentNode->edges[0].target; //The target node will be the node tested for its scores.
 			if (currentNode->walkable == false) //If the current node is not a wall.
 				continue;
-			if (!closedList.contains(currentNode->edges[n].target)) //If the target node is not in the closed list.
+			if (!closedList.contains(currentNode->edges[i].target)) //If the target node is not in the closed list.
 			{
-				gScore = currentNode->edges[n].cost + currentNode->gScore; //Set the G score of the target node to the current node's g score + its edge cost.
-				hScore = manhattanDistance(currentNode->edges[n].target, goal); //Find the manhattan distance and set it to the target nodes H score.
+				gScore = currentNode->edges[i].cost + currentNode->gScore; //Set the G score of the target node to the current node's g score + its edge cost.
+				hScore = manhattanDistance(currentNode->edges[i].target, goal); //Find the manhattan distance and set it to the target nodes H score.
 			}
 			else
 				continue;
 			//If the f score of the current nodes target is more than the target nodes g score.
-			if (currentNode->edges[n].target->fScore > (gScore + hScore))
+			if (currentNode->edges[i].target->fScore > (gScore + hScore))
 			{
-				currentNode->edges[n].target->color = 0x0FFFFF;//changes color
-				currentNode->edges[n].target->gScore = gScore; //sets the current nodes edge targets g score to the target nodes g score.
-				currentNode->edges[n].target->hScore = hScore; //sets the current nodes edge targets h score to the target nodes h score.
-				currentNode->edges[n].target->fScore = gScore + hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
-				currentNode->edges[n].target->previous = currentNode; //sets the current nodes edge targets previous node to the current node.
+				currentNode->edges[i].target->color = 0x0FFFFF;//changes color
+				currentNode->edges[i].target->gScore = gScore; //sets the current nodes edge targets g score to the target nodes g score.
+				currentNode->edges[i].target->hScore = hScore; //sets the current nodes edge targets h score to the target nodes h score.
+				currentNode->edges[i].target->fScore = gScore + hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
+				currentNode->edges[i].target->previous = currentNode; //sets the current nodes edge targets previous node to the current node.
 			}
-			if (!openList.contains(targetNode->edges[n].target)) //If the target nodes edge target is not in the open list.
+			if (!openList.contains(currentNode->edges[i].target)) //If the target nodes edge target is not in the open list.
 			{
-				openList.addItem(currentNode->edges[n].target); //Add the current nodes edge target to the open list.
-				currentNode->edges[n].target->color = 0x0FFFFF;//changes color
-				currentNode->edges[n].target->gScore = gScore; //sets the current nodes edge targets g score to the target nodes g score.
-				currentNode->edges[n].target->hScore = hScore; //sets the current nodes edge targets h score to the target nodes h score.
-				currentNode->edges[n].target->fScore = gScore + hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
-				currentNode->edges[n].target->previous = currentNode; //sets the current nodes edge targets previous node to the current node.
+				openList.addItem(currentNode->edges[i].target); //Add the current nodes edge target to the open list.
+				currentNode->edges[i].target->color = 0x0FFFFF;//changes color
+				currentNode->edges[i].target->gScore = gScore; //sets the current nodes edge targets g score to the target nodes g score.
+				currentNode->edges[i].target->hScore = hScore; //sets the current nodes edge targets h score to the target nodes h score.
+				currentNode->edges[i].target->fScore = gScore + hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
+				currentNode->edges[i].target->previous = currentNode; //sets the current nodes edge targets previous node to the current node.
 			}
 		}
 	}

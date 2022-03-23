@@ -16,14 +16,10 @@ Maze::TileKey c = Maze::TileKey::WAYPOINT;
 
 Maze::Maze()
 {
-	//Create the player
-	
-
-
 	TileKey map[Maze::HEIGHT][Maze::WIDTH] = {
 		{ w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w },
 		{ w, _, _, _, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
-		{ w, _, _, _, _, _, _, _, _, _, w, _, e, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
+		{ w, _, c, _, _, _, _, _, _, _, w, _, e, _, _, c, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, w, w, _, _, _, _, w, w, w, w, w, w, w, w, w, w, w, _, _, _, w, w, w, w },
 		{ w, _, _, _, _, w, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
@@ -34,8 +30,8 @@ Maze::Maze()
 		{ w, _, _, _, _, w, _, _, _, _, _, _, _, _, _, w, w, w, w, w, w, w, w, w, w, w, w, w },
 		{ w, _, _, _, w, w, w, w, w, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, w, _, _, _, w, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, w },
-		{ w, _, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
-		{ w, _, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, _, w, _, _, _, _, _, w },
+		{ w, _, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, c, _, w },
+		{ w, _, _, _, _, _, c, _, w, _, _, c, _, _, _, _, _, _, _, _, _, w, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, w, _, _, _, _, _, _, _, _, _, _, _, _, w, _, _, _, _, _, w },
 		{ w, w, w, w, w, w, w, w, w, w, w, w, _, _, _, w, w, w, w, w, w, w, w, w, w, w, w, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w, _, _, _, w },
@@ -74,7 +70,7 @@ Maze::~Maze()
 void Maze::draw()
 {
 	Scene::draw();
-	NodeGraph::drawGraph(m_grid[0][0].node);
+	//NodeGraph::drawGraph(m_grid[0][0].node);
 }
 
 Maze::Tile Maze::getTile(MathLibrary::Vector2 position)
@@ -136,8 +132,8 @@ Maze::Tile Maze::createTile(int x, int y, TileKey key)
 	//	break;
 	case TileKey::GUARD:
 		tile.cost = 1.0f;
-		Guard* guard = new Guard(position.x, position.y, 100, 50, 0xFF6666FF, this);
-		guard->setTarget(m_player);
+		Guard* guard = new Guard(position.x, position.y, 200, 250, 0xFF6666FF, this, m_player);
+		guard->setTarget(m_waypoints[0]);
 		tile.actor = guard;
 		addActor(tile.actor);
 		break;

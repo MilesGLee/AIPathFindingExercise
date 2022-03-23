@@ -6,5 +6,7 @@ class Waypoint :
 public:
 	Waypoint(float x, float y);
 	void draw() override;
+
+	void onCollision(Actor* actor) override;
 };
 

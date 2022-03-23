@@ -91,6 +91,6 @@ private:
 	Tile m_grid[WIDTH][HEIGHT];
 
 	Player* m_player;
-	DynamicArray<Actor*> m_waypoints;
+	DynamicArray<Actor*> m_waypoints; //The array of all the waypoints in the map
 };
 
