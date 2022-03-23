@@ -80,6 +80,8 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 {
 	resetGraphScore(start); //Reset graphs to 0
 	NodeGraph::Node* currentNode;
+	float gScore = 0;
+	float hScore = 0;
 	DynamicArray<NodeGraph::Node*> openList, closedList = DynamicArray<NodeGraph::Node*>(); //The two lists of nodes the function will use to sort and find the goal.
 	openList.addItem(start);
 	currentNode = start;
@@ -101,19 +103,27 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 				continue;
 			if (!closedList.contains(currentNode->edges[n].target)) //If the target node is not in the closed list.
 			{
-				targetNode->gScore = currentNode->edges[n].cost + currentNode->gScore; //Set the G score of the target node to the current node's g score + its edge cost.
-				targetNode->hScore = manhattanDistance(currentNode->edges[n].target, goal); //Find the manhattan distance and set it to the target nodes H score.
+				gScore = currentNode->edges[n].cost + currentNode->gScore; //Set the G score of the target node to the current node's g score + its edge cost.
+				hScore = manhattanDistance(currentNode->edges[n].target, goal); //Find the manhattan distance and set it to the target nodes H score.
 			}
 			else
 				continue;
-			//If the open list doesnt contain the target nodes edges target or the g score of the current nodes target is more than the target nodes g score.
-			if (!openList.contains(targetNode->edges[n].target) || currentNode->edges[n].target->gScore > targetNode->gScore)
+			//If the f score of the current nodes target is more than the target nodes g score.
+			if (currentNode->edges[n].target->fScore > (gScore + hScore))
+			{
+				currentNode->edges[n].target->color = 0x0FFFFF;//changes color
+				currentNode->edges[n].target->gScore = gScore; //sets the current nodes edge targets g score to the target nodes g score.
+				currentNode->edges[n].target->hScore = hScore; //sets the current nodes edge targets h score to the target nodes h score.
+				currentNode->edges[n].target->fScore = gScore + hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
+				currentNode->edges[n].target->previous = currentNode; //sets the current nodes edge targets previous node to the current node.
+			}
+			if (!openList.contains(targetNode->edges[n].target)) //If the target nodes edge target is not in the open list.
 			{
 				openList.addItem(currentNode->edges[n].target); //Add the current nodes edge target to the open list.
 				currentNode->edges[n].target->color = 0x0FFFFF;//changes color
-				currentNode->edges[n].target->gScore = targetNode->gScore; //sets the current nodes edge targets g score to the target nodes g score.
-				currentNode->edges[n].target->hScore = targetNode->hScore; //sets the current nodes edge targets h score to the target nodes h score.
-				currentNode->edges[n].target->fScore = targetNode->gScore + targetNode->hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
+				currentNode->edges[n].target->gScore = gScore; //sets the current nodes edge targets g score to the target nodes g score.
+				currentNode->edges[n].target->hScore = hScore; //sets the current nodes edge targets h score to the target nodes h score.
+				currentNode->edges[n].target->fScore = gScore + hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
 				currentNode->edges[n].target->previous = currentNode; //sets the current nodes edge targets previous node to the current node.
 			}
 		}
@@ -135,7 +145,7 @@ void NodeGraph::drawGraph(Node* start)
 void NodeGraph::drawNode(Node* node, float size)
 {
 	static char buffer[10];
-	sprintf_s(buffer, "%.0f", node->gScore);
+	sprintf_s(buffer, "%.0f", node->fScore);
 
 	//Draw the circle for the outline
 	DrawCircle((int)node->position.x, (int)node->position.y, size + 1, GetColor(node->color));

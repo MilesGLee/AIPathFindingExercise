@@ -1,18 +1,19 @@
 #include "Guard.h"
 #include "MazeScene.h"
 #include "Wall.h"
+#include "Waypoint.h"
 #include "raylib.h"
 #include "Transform2D.h"
 #include "PathfindComponent.h"
 #include "MoveComponent.h"
 #include "SpriteComponent.h"
+#include <iostream>
 
 Guard::Guard(float x, float y, float maxSpeed, float maxForce, int color, Maze* maze)
 	: Agent(x, y, "Guard", maxSpeed, maxForce)
 {
 	m_maze = maze;
 	getTransform()->setScale({ Maze::TILE_SIZE,Maze::TILE_SIZE });
-
 	m_pathfindComponent = new PathfindComponent(maze);
 	m_pathfindComponent->setColor(color);
 	addComponent(m_pathfindComponent);
@@ -26,6 +27,7 @@ Guard::~Guard()
 
 void Guard::update(float deltaTime)
 {
+	m_waypoints = m_maze->getWaypoints();
 	Agent::update(deltaTime);
 }
 
@@ -49,12 +51,25 @@ void Guard::onCollision(Actor* other)
 
 		getMoveComponent()->setVelocity({ 0, 0 });
 	}
+	if (dynamic_cast<Waypoint*>(other)) 
+	{
+		std::cout << "I collided" << std::endl;
+		Guard::changePatrol();
+	}
 }
 
 void Guard::setTarget(Actor* target)
 {
 	m_target = target;
 	m_pathfindComponent->setTarget(target);
+}
+
+void Guard::changePatrol()
+{
+	DynamicArray<Actor*> newWaypoints = m_waypoints;
+	newWaypoints.remove(m_target);
+	int point = rand() % newWaypoints.getLength();
+	m_target = m_waypoints[point];
 }
 
 Actor* Guard::getTarget()

@@ -69,6 +69,8 @@ public:
 	/// <returns>A Vector2 with the position of the tile</returns>
 	MathLibrary::Vector2 getPosition(Tile tile);
 
+	DynamicArray<Actor*> getWaypoints();
+
 protected:
 	/// <summary>
 	/// Create a tile from a given key. If an actor is created, it is added to the scene.
@@ -89,5 +91,6 @@ private:
 	Tile m_grid[WIDTH][HEIGHT];
 
 	Player* m_player;
+	DynamicArray<Actor*> m_waypoints;
 };
 

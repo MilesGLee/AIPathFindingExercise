@@ -7,6 +7,12 @@ class PathfindComponent;
 class Guard : public Agent
 {
 public:
+	enum class State
+	{
+		PATROL,
+		CHASE
+	};
+
 	Guard(float x, float y, float speed, float maxForce, int color, Maze* maze);
 	~Guard();
 
@@ -23,10 +29,14 @@ public:
 	/// <param name="target">The new target</param>
 	void setTarget(Actor* target);
 
+	void changePatrol();
+
 private:
 	PathfindComponent* m_pathfindComponent;
 	Maze* m_maze;
 
 	Actor* m_target = nullptr;
+	DynamicArray<Actor*> m_waypoints;
+	State m_state;
 };
 
