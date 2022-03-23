@@ -4,6 +4,7 @@
 #include "Ghost.h"
 #include "Transform2D.h"
 #include "Waypoint.h"
+#include "Guard.h"
 
 Maze::TileKey _ = Maze::TileKey::OPEN;
 Maze::TileKey w = Maze::TileKey::WALL;
@@ -27,12 +28,12 @@ Maze::Maze()
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
+		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, e, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
-		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
-		{ w, _, c, _, _, _, _, _, _, _, _, _, g, _, _, _, _, _, _, _, _, _, _, _, _, c, _, w },
+		{ w, _, c, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, c, _, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
 		{ w, w, w, w, w, w, w, w, w, w, _, _, _, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w },
 		{ w, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, w },
@@ -120,11 +121,18 @@ Maze::Tile Maze::createTile(int x, int y, TileKey key)
 		tile.actor = m_player;
 		addActor(tile.actor);
 		break;
-	case TileKey::GHOST:
+	//case TileKey::GHOST:
+	//	tile.cost = 1.0f;
+	//	Ghost* ghost = new Ghost(position.x, position.y, 100, 50, 0xFF6666FF, this);
+	//	ghost->setTarget(m_player);
+	//	tile.actor = ghost;
+	//	addActor(tile.actor);
+	//	break;
+	case TileKey::GUARD:
 		tile.cost = 1.0f;
-		Ghost* ghost = new Ghost(position.x, position.y, 100, 50, 0xFF6666FF, this);
-		ghost->setTarget(m_player);
-		tile.actor = ghost;
+		Guard* guard = new Guard(position.x, position.y, 100, 50, 0xFF6666FF, this);
+		guard->setTarget(m_player);
+		tile.actor = guard;
 		addActor(tile.actor);
 		break;
 	}
