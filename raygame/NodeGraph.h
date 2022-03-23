@@ -1,6 +1,6 @@
 #pragma once
 #include <Vector2.h>
-#include "ActorArray.h"
+#include "DynamicArray.h"
 
 namespace NodeGraph
 {
@@ -28,6 +28,8 @@ namespace NodeGraph
 	};
 
 	DynamicArray<Node*> findPath(Node* start, Node* end);
+
+	float manhattanDistance(Node* left, Node* right);
 
 	void drawGraph(Node* start);
 

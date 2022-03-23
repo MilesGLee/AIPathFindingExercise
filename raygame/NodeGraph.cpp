@@ -59,37 +59,71 @@ void sortGScore(DynamicArray<NodeGraph::Node*>& nodes)
 	}
 }
 
+void sortHScore(DynamicArray<NodeGraph::Node*>& nodes)
+{
+	NodeGraph::Node* key = nullptr;
+	int j = 0;
+
+	for (int i = 1; i < nodes.getLength(); i++) {
+		key = nodes[i];
+		j = i - 1;
+		while (j >= 0 && nodes[j]->hScore > key->hScore) {
+			nodes[j + 1] = nodes[j];
+			j--;
+		}
+
+		nodes[j + 1] = key;
+	}
+}
+
 DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 {
-	resetGraphScore(start);
-	DynamicArray<NodeGraph::Node*> openList, closedList = DynamicArray<NodeGraph::Node*>();
-
+	resetGraphScore(start); //Reset graphs to 0
+	NodeGraph::Node* currentNode;
+	DynamicArray<NodeGraph::Node*> openList, closedList = DynamicArray<NodeGraph::Node*>(); //The two lists of nodes the function will use to sort and find the goal.
 	openList.addItem(start);
-
-	while (openList.getLength() != 0) 
+	currentNode = start;
+	while (openList.getLength() != 0) //While the open list is not empty.
 	{
-		sortGScore(openList);
+		sortFScore(openList); //Sort the F score of the open lists items.
+		currentNode = openList[0]; //Set the current node to the first item in the open list.
 
-		NodeGraph::Node* m_currentNode = openList[0];
+		if (currentNode == goal) //If the current node is our goal, end this function and return the path.
+			return reconstructPath(start, currentNode);
 
-		for (int i = 0; i < openList[0]->edges.getLength(); i++) 
+		closedList.addItem(currentNode); //Remove the current node from the open list and add it to the closed list.
+		openList.remove(currentNode);
+
+		for (int n = 0; n < currentNode->edges.getLength(); n++) //Loop through each edge of the current node.
 		{
-			NodeGraph::Node* targetNode = openList[0]->edges[i].target;
-
-			if (!closedList.contains(targetNode) && !openList.contains(targetNode)) 
+			NodeGraph::Node* targetNode = currentNode->edges[0].target; //The target node will be the node tested for its scores.
+			if (currentNode->walkable == false) //If the current node is not a wall.
+				continue;
+			if (!closedList.contains(currentNode->edges[n].target)) //If the target node is not in the closed list.
 			{
-				targetNode->gScore = openList[0]->gScore + openList[0]->edges[i].cost;
-				targetNode->previous = openList[0];
-				openList.addItem(targetNode);
+				targetNode->gScore = currentNode->edges[n].cost + currentNode->gScore; //Set the G score of the target node to the current node's g score + its edge cost.
+				targetNode->hScore = manhattanDistance(currentNode->edges[n].target, goal); //Find the manhattan distance and set it to the target nodes H score.
+			}
+			else
+				continue;
+			//If the open list doesnt contain the target nodes edges target or the g score of the current nodes target is more than the target nodes g score.
+			if (!openList.contains(targetNode->edges[n].target) || currentNode->edges[n].target->gScore > targetNode->gScore)
+			{
+				openList.addItem(currentNode->edges[n].target); //Add the current nodes edge target to the open list.
+				currentNode->edges[n].target->color = 0x0FFFFF;//changes color
+				currentNode->edges[n].target->gScore = targetNode->gScore; //sets the current nodes edge targets g score to the target nodes g score.
+				currentNode->edges[n].target->hScore = targetNode->hScore; //sets the current nodes edge targets h score to the target nodes h score.
+				currentNode->edges[n].target->fScore = targetNode->gScore + targetNode->hScore; //Sets the current nodes edge target to the sum of the target nodes g and h scores.
+				currentNode->edges[n].target->previous = currentNode; //sets the current nodes edge targets previous node to the current node.
 			}
 		}
-		closedList.addItem(openList[0]);
-		openList.remove(openList[0]);
-
-		if (m_currentNode == goal)
-			return reconstructPath(start, goal);
 	}
-	
+	return reconstructPath(start, goal); //Construct and return the new path using A*.
+}
+
+float NodeGraph::manhattanDistance(Node* left, Node* right)
+{
+	return abs(right->position.x - left->position.x) + abs(right->position.y - left->position.y); //Math equation used to find the distance in a way that creates a diagonal input on a 2D grid.
 }
 
 void NodeGraph::drawGraph(Node* start)
