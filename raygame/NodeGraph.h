@@ -29,6 +29,8 @@ namespace NodeGraph
 
 	DynamicArray<Node*> findPath(Node* start, Node* end);
 
+	float manhattanDistance(Node* left, Node* right);
+
 	void drawGraph(Node* start);
 
 	void drawNode(Node* node, float size = 14);

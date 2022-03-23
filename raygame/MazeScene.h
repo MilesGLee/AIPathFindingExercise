@@ -22,7 +22,9 @@ public:
 		WALL,
 		MUD,
 		PLAYER,
-		GHOST
+		GHOST,
+		GUARD,
+		WAYPOINT
 	};
 
 	/// <summary>
